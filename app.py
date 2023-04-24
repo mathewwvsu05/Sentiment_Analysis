@@ -18,13 +18,16 @@ import base64
 from wordcloud import WordCloud
 from collections import Counter
 
+# Configuration Section
+st.set_page_config(page_title='Sentiment Analysis Survey', layout='wide')
+
 # Define the Streamlit app
 def app():
-    
     #do various initialization tasks
     nltk.download('stopwords')
     from nltk.corpus import stopwords
     stopwords_list = stopwords.words('english')
+    
     #no and not are excluded from stopwords
     stopwords_list.remove('no')
     stopwords_list.remove('not')
@@ -36,7 +39,7 @@ def app():
     st.subheader('What is Sentiment Analysis?')
     st.write('Sentiment analysis is the process of determining the emotional tone of a piece of text. TextBlob provides two properties for sentiment analysis: polarity and subjectivity.')
     st.write('Polarity refers to the degree to which the text expresses a positive or negative sentiment. Polarity is represented as a float value between -1.0 and 1.0, where -1.0 represents a completely negative sentiment, 0.0 represents a neutral sentiment, and 1.0 represents a completely positive sentiment. Subjectivity, on the other hand, refers to the degree to which the text expresses a subjective or objective viewpoint.')
-    st. write('Subjectivity is also represented as a float value between 0.0 and 1.0, where 0.0 represents a completely objective viewpoint and 1.0 represents a completely subjective viewpoint.')
+    st.write('Subjectivity is also represented as a float value between 0.0 and 1.0, where 0.0 represents a completely objective viewpoint and 1.0 represents a completely subjective viewpoint.')
 
     st.subheader('Survey Topic')
     st.write('We conducted a survey among the general public who ought to have convictions or doubts on the future between humanity and AI. They were asked for their opinion about the topic through either agreeing or disgreeing on the topic, along with briefly explaining their corresponding answer. Agree was labeled as 1 while Disagree was be labeled as 0 to align with the properties of Sentiment Analysis.')
@@ -104,26 +107,23 @@ def app():
         
         if st.button('Load Dataset'):  
             df = pd.read_csv('sa_responses-1.csv')
-
-            #df = df.reindex(columns=['Please leave a brief explanation as to why you answered so.', 'Do you believe in a future in which humans will be at the apex of society and Artifical Intelligence (AI) and every aspect thereof will serve to aid humanity?'])
-
-            #df.rename(columns={'Please leave a brief explanation as to why you answered so.' : 'text', 'Do you believe in a future in which humans will be at the apex of society and Artifical Intelligence (AI) and every aspect thereof will serve to aid humanity?' : 'label'}, inplace = True)
-
             df['label'].replace({"Agree" : 1, "Disagree" : 0}, inplace = True)
 
             #remember this very useful function to randomly rearrange the dataset
             train = shuffle(df)
             
-            
-            st.write('There were 20 responses and we display them in the table below.')
+            st.subheader('Survey Responses')
+            st.write(f'There were {df.shape[0]} responses and we display them in the table below.')
             st.dataframe(train, use_container_width=True)
-   
-            st.write('Dataset shape: ')
-            st.text(df.shape)
-        
+             
+            st.subheader('Dataset Shape')
+            st.text(f'Rows: {df.shape[0]} and Columns {df.shape[1]})
+            
+            st.subheader('Remove Null Values')
             st.write('Checking for null values. Do not proceed if we find a null value.')
             st.write(train.isnull().sum())
             
+            st.subheader('Pre-process')
             st.write('We begin pre-processing the data.  The steps are necessary to clean up \
             the dataset and achieve better results from the classifier. Some steps are \
             resource-heavy so be patient and check the animated "running" indicator \
@@ -143,7 +143,7 @@ def app():
             st.write('Removing punctuations...')
             train['text']=train['text'].apply(remove_punctuations)
  
-            st.write('In Natural Language Processing (NLP), stopwords refer to commonly \
+            st.write('\nIn Natural Language Processing (NLP), stopwords refer to commonly \
             occurring words in a language that are often filtered out from the text before \
             processing. These words typically do not contribute much to the meaning of a \
             sentence and are used primarily to connect other words together. \nExamples of \
@@ -168,12 +168,12 @@ def app():
             st.text('We look at our dataset after more pre-processing steps')
             st.write(train.head(50))    
 
-            st.write('Removing alpha numeric data...')
+            st.write('\nRemoving alpha numeric data...')
             train['text']=train['text'].apply(remove_alphanumeric)
             st.text('We look at our dataset after the pre-processing steps')
             st.write(train.head(50))
 
-            st.write('We lemmatize the words. \
+            st.write('\nWe lemmatize the words. \
                       \nThis process could take up to several minutes to complete. Please wait....')
 
             train['text']=train['text'].apply(lemmatize_text)
@@ -197,7 +197,7 @@ def app():
             result.loc[result['label']=="0", 'Sentiment_label'] = 0
             result.drop(['label'],axis=1, inplace=True)
             
-            st.write('We view the dataset after the sentiment labels are updated.')
+            st.write('\nWe view the dataset after the sentiment labels are updated.')
             result = result.sort_values(by=['Sentiment'], ascending=False)
             st.dataframe(result, use_container_width=True)
 
@@ -205,6 +205,7 @@ def app():
             st.write(counts)
             
             #reads the sample count from the previous line
+            st.subheader('Overall Sentiment Statistics')
             labels = ['Negative','Positive']
             sizes = [counts[0], counts[1]]
             custom_colours = ['#ff7675', '#74b9ff']
