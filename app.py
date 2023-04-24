@@ -117,13 +117,13 @@ def app():
             st.dataframe(train, use_container_width=True)
              
             st.subheader('Dataset Shape')
-            st.text(f'Rows: {df.shape[0]} and Columns {df.shape[1]}')
+            st.text(f'Rows : {df.shape[0]} and Columns : {df.shape[1]}')
             
             st.subheader('Remove Null Values')
             st.write('Checking for null values. Do not proceed if we find a null value.')
             st.write(train.isnull().sum())
             
-            st.subheader('Pre-process')
+            st.subheader('Pre-processing the Data')
             st.write('We begin pre-processing the data.  The steps are necessary to clean up \
             the dataset and achieve better results from the classifier. Some steps are \
             resource-heavy so be patient and check the animated "running" indicator \
@@ -201,6 +201,7 @@ def app():
             result = result.sort_values(by=['Sentiment'], ascending=False)
             st.dataframe(result, use_container_width=True)
 
+            st.subheader('Sentiment Count')
             counts = result['Sentiment'].value_counts()
             st.write(counts)
             
