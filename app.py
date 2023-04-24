@@ -117,7 +117,7 @@ def app():
             st.dataframe(train, use_container_width=True)
              
             st.subheader('Dataset Shape')
-            st.text(f'Rows: {df.shape[0]} and Columns {df.shape[1]})
+            st.text(f'Rows: {df.shape[0]} and Columns {df.shape[1]}')
             
             st.subheader('Remove Null Values')
             st.write('Checking for null values. Do not proceed if we find a null value.')
