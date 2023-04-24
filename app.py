@@ -103,7 +103,7 @@ def app():
             return text
         
         if st.button('Load Dataset'):  
-            df = pd.read_csv(r'C:\Users\ACER\Desktop\Intelligent Systems\Sentiment Analysis\datasets\sa_responses-1.csv')
+            df = pd.read_csv('sa_responses-1.csv')
 
             #df = df.reindex(columns=['Please leave a brief explanation as to why you answered so.', 'Do you believe in a future in which humans will be at the apex of society and Artifical Intelligence (AI) and every aspect thereof will serve to aid humanity?'])
 
